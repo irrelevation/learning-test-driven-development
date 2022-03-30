@@ -1,5 +1,5 @@
 import { strict as assert } from "assert";
-import { Money } from "./money.mjs";
+import { Money, Portfolio } from "./money.mjs";
 
 let fiveDollars = new Money(5, "USD");
 let tenDollars = new Money(10, "USD");
@@ -13,3 +13,8 @@ let initialMoney = new Money(4002, "KRW");
 let actualMoneyAfterDivision = initialMoney.divideBy(4);
 let expectedMoneyAfterDivision = new Money(1000.5, "KRW");
 assert.deepEqual(expectedMoneyAfterDivision, actualMoneyAfterDivision);
+
+let portfolio = new Portfolio();
+portfolio.add(fiveDollars, tenDollars);
+let fifteenDollars = new Money(15, "USD");
+assert.deepEqual(portfolio.evaluate("USD"), fifteenDollars);
