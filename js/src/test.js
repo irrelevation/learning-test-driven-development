@@ -1,6 +1,13 @@
 import { strict as assert } from "assert";
 import { Money } from "./money.js";
 import { Portfolio } from "./portfolio.js";
+import { stdout, stderr } from "process";
+
+console = new console.Console({
+  groupIndentation: 4,
+  stdout,
+  stderr,
+});
 
 class MoneyTest {
   getAllTestMethods() {
@@ -13,8 +20,18 @@ class MoneyTest {
   }
   runAllTests() {
     for (let test of this.getAllTestMethods()) {
-      this[test]();
-      console.log("[\u2713]", test);
+      try {
+        this[test]();
+        console.log("[\u2713]", test);
+      } catch (error) {
+        if (error instanceof assert.AssertionError) {
+          console.group("[\u274C]", test, "\n");
+          console.log(error.message, "\n");
+          console.groupEnd();
+        } else {
+          throw error;
+        }
+      }
     }
   }
   testMultiplication() {
