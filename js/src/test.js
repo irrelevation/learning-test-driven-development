@@ -14,6 +14,7 @@ class MoneyTest {
   runAllTests() {
     for (let test of this.getAllTestMethods()) {
       this[test]();
+      console.log("[\u2713]", test);
     }
   }
   testMultiplication() {
