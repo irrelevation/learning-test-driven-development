@@ -53,11 +53,7 @@ class MoneyTest {
     portfolio.add(fiveDollars, tenDollars);
     assert.deepEqual(portfolio.evaluate("USD"), fifteenDollars);
   }
-  testDollarsToEuros() {
-    let fiveDollars = new Money(5, "USD");
-    let sixEuros = new Money(6, "EUR");
-    assert.deepEqual(fiveDollars.convert("EUR"), sixEuros);
-  }
+
   testAdditionOfDollarsAndEuros() {
     let portfolio = new Portfolio();
     let fiveDollars = new Money(5, "USD");
@@ -65,6 +61,14 @@ class MoneyTest {
     portfolio.add(fiveDollars, fiveEuros);
     let expectedDollarValue = new Money(11, "USD");
     assert.deepEqual(portfolio.evaluate("USD"), expectedDollarValue);
+  }
+  testAdditionOfDOllarsAndWons() {
+    let fiveDollars = new Money(5, "USD");
+    let thousandWons = new Money(1000, "KRW");
+    let portfolio = new Portfolio();
+    portfolio.add(fiveDollars, thousandWons);
+    let expectedValue = new Money(6500, "KRW");
+    assert.deepEqual(portfolio.evaluate("KRW"), expectedValue);
   }
 }
 
