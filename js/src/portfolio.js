@@ -10,7 +10,10 @@ export class Portfolio {
   }
 
   evaluate(currency) {
-    let total = this.moneys.reduce((total, money) => total + money.amount, 0);
+    let total = this.moneys.reduce(
+      (total, money) => total + money.convert(currency).amount,
+      0
+    );
     return new Money(total, currency);
   }
 }
