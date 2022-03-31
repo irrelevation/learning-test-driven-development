@@ -21,12 +21,14 @@ class MoneyTest {
   runAllTests() {
     for (let test of this.getAllTestMethods()) {
       try {
+        console.log("[running]", test);
         this[test]();
-        console.log("[\u2713]", test);
       } catch (error) {
         if (error instanceof assert.AssertionError) {
           console.group("[\u274C]", test, "\n");
           console.log(error.message, "\n");
+          console.log("expected:", error.expected);
+          console.log("actual:  ", error.actual, "\n");
           console.groupEnd();
         } else {
           throw error;
@@ -69,6 +71,17 @@ class MoneyTest {
     portfolio.add(fiveDollars, thousandWons);
     let expectedValue = new Money(6500, "KRW");
     assert.deepEqual(portfolio.evaluate("KRW"), expectedValue);
+  }
+  testAdditionWithMultipleMissingExchangeRates() {
+    let oneDollar = new Money(1, "USD");
+    let oneEuro = new Money(1, "EUR");
+    let oneWon = new Money(1, "KRW");
+    let portfolio = new Portfolio();
+    portfolio.add(oneDollar, oneEuro, oneWon);
+    let expectedError = new Error(
+      "Missing exchange rate(s): [USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
+    );
+    assert.throws(() => portfolio.evaluate("Kalganid"), expectedError);
   }
 }
 
