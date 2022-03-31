@@ -3,10 +3,18 @@ import { Money } from "./money.js";
 import { Portfolio } from "./portfolio.js";
 
 class MoneyTest {
+  getAllTestMethods() {
+    const properties = Object.getOwnPropertyNames(MoneyTest.prototype);
+    return properties.filter(
+      (prop) =>
+        typeof MoneyTest.prototype[prop] === "function" &&
+        prop.startsWith("test")
+    );
+  }
   runAllTests() {
-    this.testAddition();
-    this.testDivision();
-    this.testMultiplication();
+    for (let test of this.getAllTestMethods()) {
+      this[test]();
+    }
   }
   testMultiplication() {
     let tenEuros = new Money(10, "EUR");
