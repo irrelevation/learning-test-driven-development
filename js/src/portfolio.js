@@ -3,14 +3,16 @@ import { Money } from "./money.js";
 export class Portfolio {
   constructor() {
     this.moneys = [];
+    this.conversionRates = new Map();
+    this.conversionRates.set("EUR->USD", 1.2);
+    this.conversionRates.set("USD->KRW", 1100);
   }
 
   getConversionRate(fromCurrency, toCurrency) {
-    const EUR_TO_USD = 1.2;
     if (fromCurrency === toCurrency) {
       return 1;
     } else {
-      return EUR_TO_USD;
+      return this.conversionRates.get(`${fromCurrency}->${toCurrency}`);
     }
   }
   convert(money, currency) {
