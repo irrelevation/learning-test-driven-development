@@ -2,7 +2,7 @@ import { strict as assert } from "assert";
 import { Money } from "./money.js";
 import { Portfolio } from "./portfolio.js";
 import { stdout, stderr } from "process";
-import { Bank } from "./bank.js";
+import { Bank, ConversionError } from "./bank.js";
 
 console = new console.Console({
   groupIndentation: 4,
@@ -11,6 +11,11 @@ console = new console.Console({
 });
 
 class MoneyTest {
+  constructor() {
+    this.bank = new Bank();
+    this.bank.addExchangeRate("EUR", "USD", 1.2);
+    this.bank.addExchangeRate("USD", "KRW", 1100);
+  }
   getAllTestMethods() {
     const properties = Object.getOwnPropertyNames(MoneyTest.prototype);
     return properties.filter(
@@ -55,7 +60,7 @@ class MoneyTest {
     let tenDollars = new Money(10, "USD");
     let fifteenDollars = new Money(15, "USD");
     portfolio.add(fiveDollars, tenDollars);
-    assert.deepEqual(portfolio.evaluate("USD"), fifteenDollars);
+    assert.deepEqual(portfolio.evaluate(this.bank, "USD"), fifteenDollars);
   }
   testAdditionOfDollarsAndEuros() {
     let portfolio = new Portfolio();
@@ -63,7 +68,7 @@ class MoneyTest {
     let fiveEuros = new Money(5, "EUR");
     portfolio.add(fiveDollars, fiveEuros);
     let expectedDollarValue = new Money(11, "USD");
-    assert.deepEqual(portfolio.evaluate("USD"), expectedDollarValue);
+    assert.deepEqual(portfolio.evaluate(this.bank, "USD"), expectedDollarValue);
   }
   testAdditionOfDOllarsAndWons() {
     let fiveDollars = new Money(5, "USD");
@@ -71,7 +76,7 @@ class MoneyTest {
     let portfolio = new Portfolio();
     portfolio.add(fiveDollars, thousandWons);
     let expectedValue = new Money(6500, "KRW");
-    assert.deepEqual(portfolio.evaluate("KRW"), expectedValue);
+    assert.deepEqual(portfolio.evaluate(this.bank, "KRW"), expectedValue);
   }
   testAdditionWithMultipleMissingExchangeRates() {
     let oneDollar = new Money(1, "USD");
@@ -82,20 +87,21 @@ class MoneyTest {
     let expectedError = new Error(
       "Missing exchange rate(s): [USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
     );
-    assert.throws(() => portfolio.evaluate("Kalganid"), expectedError);
+    assert.throws(
+      () => portfolio.evaluate(this.bank, "Kalganid"),
+      expectedError
+    );
   }
   testConversion() {
-    let bank = new Bank();
-    bank.addExchangeRate("EUR", "USD", 1.2);
     let fiveEuros = new Money(5, "EUR");
     let sixDollars = new Money(6, "USD");
-    assert.deepEqual(bank.convert(fiveEuros, "USD"), sixDollars);
+    assert.deepEqual(this.bank.convert(fiveEuros, "USD"), sixDollars);
   }
   testConversionWithMissingExchangeRate() {
     let fiveDollars = new Money(5, "USD");
-    let expectedError = new Error("USD->Kryptonite");
+    let expectedError = new ConversionError("USD->Kryptonite");
     assert.throws(
-      () => new Bank().convert(fiveDollars, "Kryptonite"),
+      () => this.bank.convert(fiveDollars, "Kryptonite"),
       expectedError
     );
   }

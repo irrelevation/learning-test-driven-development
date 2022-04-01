@@ -1,5 +1,12 @@
 import { Money } from "./money.js";
 
+export class ConversionError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ConversionError";
+  }
+}
+
 export class Bank {
   constructor() {
     this.exchangeRates = new Map();
@@ -17,7 +24,9 @@ export class Bank {
     if (money.currency === currency)
       return new Money(money.amount, money.currency);
     let rate = this.getExchangeRate(money.currency, currency);
-    if (rate === undefined) throw new Error(this.getExchangeKey(money.currency, currency));
+    if (rate === undefined) {
+      throw new ConversionError(this.getExchangeKey(money.currency, currency));
+    }
     return new Money(money.amount * rate, currency);
   }
 }
