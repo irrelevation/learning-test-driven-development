@@ -1,7 +1,7 @@
 {
   "name": "learning-tdd",
   "version": "1.0.0",
-  "description": "Code-along to \"Learning Test-Driven Developement\" by Saleem Siddiqui",
+  "description": "Code-along to \"Learning Test-Driven Development\" by Saleem Siddiqui",
   "type": "module",
   "main": "portfolio.js",
   "scripts": {
