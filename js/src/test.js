@@ -2,6 +2,7 @@ import { strict as assert } from "assert";
 import { Money } from "./money.js";
 import { Portfolio } from "./portfolio.js";
 import { stdout, stderr } from "process";
+import { Bank } from "./bank.js";
 
 console = new console.Console({
   groupIndentation: 4,
@@ -36,6 +37,7 @@ class MoneyTest {
       }
     }
   }
+
   testMultiplication() {
     let tenEuros = new Money(10, "EUR");
     let twentyEuros = new Money(20, "EUR");
@@ -55,7 +57,6 @@ class MoneyTest {
     portfolio.add(fiveDollars, tenDollars);
     assert.deepEqual(portfolio.evaluate("USD"), fifteenDollars);
   }
-
   testAdditionOfDollarsAndEuros() {
     let portfolio = new Portfolio();
     let fiveDollars = new Money(5, "USD");
@@ -82,6 +83,13 @@ class MoneyTest {
       "Missing exchange rate(s): [USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
     );
     assert.throws(() => portfolio.evaluate("Kalganid"), expectedError);
+  }
+  testConversion() {
+    let bank = new Bank();
+    bank.addExchangeRate("EUR", "USD", 1.2);
+    let fiveEuros = new Money(5, "EUR");
+    let sixDollars = new Money(6, "USD");
+    assert.deepEqual(bank.convert(fiveEuros, "USD"), sixDollars);
   }
 }
 
