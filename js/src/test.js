@@ -91,6 +91,14 @@ class MoneyTest {
     let sixDollars = new Money(6, "USD");
     assert.deepEqual(bank.convert(fiveEuros, "USD"), sixDollars);
   }
+  testConversionWithMissingExchangeRate() {
+    let fiveDollars = new Money(5, "USD");
+    let expectedError = new Error("USD->Kryptonite");
+    assert.throws(
+      () => new Bank().convert(fiveDollars, "Kryptonite"),
+      expectedError
+    );
+  }
 }
 
 new MoneyTest().runAllTests();

@@ -17,7 +17,7 @@ export class Bank {
     if (money.currency === currency)
       return new Money(money.amount, money.currency);
     let rate = this.getExchangeRate(money.currency, currency);
-    if (rate === undefined) throw new Error("Exchange rate undefined");
+    if (rate === undefined) throw new Error(this.getExchangeKey(money.currency, currency));
     return new Money(money.amount * rate, currency);
   }
 }
