@@ -11,5 +11,4 @@ export class Money {
   divideBy(divisor) {
     return new Money(this.amount / divisor, this.currency);
   }
-
 }

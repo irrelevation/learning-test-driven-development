@@ -11,7 +11,7 @@ console = new console.Console({
 });
 
 class MoneyTest {
-  constructor() {
+  setUp() {
     this.bank = new Bank();
     this.bank.addExchangeRate("EUR", "USD", 1.2);
     this.bank.addExchangeRate("USD", "KRW", 1100);
@@ -28,6 +28,7 @@ class MoneyTest {
     for (let test of this.getAllTestMethods()) {
       try {
         console.log("[running]", test);
+        this.setUp();
         this[test]();
       } catch (error) {
         if (error instanceof assert.AssertionError) {
@@ -92,10 +93,14 @@ class MoneyTest {
       expectedError
     );
   }
-  testConversion() {
+  testConversionWithDifferentExchangeRates() {
     let fiveEuros = new Money(5, "EUR");
     let sixDollars = new Money(6, "USD");
     assert.deepEqual(this.bank.convert(fiveEuros, "USD"), sixDollars);
+
+    this.bank.addExchangeRate("EUR", "USD", 2);
+    let tenDollars = new Money(10, "USD");
+    assert.deepEqual(this.bank.convert(fiveEuros, "USD"), tenDollars);
   }
   testConversionWithMissingExchangeRate() {
     let fiveDollars = new Money(5, "USD");
