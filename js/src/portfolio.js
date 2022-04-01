@@ -1,4 +1,3 @@
-import { fail } from "assert";
 import { Money } from "./money.js";
 
 export class Portfolio {
